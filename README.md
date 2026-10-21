@@ -1,4 +1,4 @@
-# End-to-End MLOps Pipeline: UCI Heart Disease Risk Prediction
+# End-to-End MLOps Pipeline: UCI Heart Disease Risk Prediction - Vishal Bandhu 2025AE0587
 
 ![Continuous Integration Pipeline](https://github.com/chmes271/mlops-heart-disease/actions/workflows/ci_cd.yml/badge.svg)
 ![Python Version](https://img.shields.io/badge/Python-3.10-blue.svg)
