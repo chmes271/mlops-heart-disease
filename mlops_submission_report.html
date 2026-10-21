@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLOps Experiential Learning Assignment Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #222;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        h1 {
+            color: #1B365D;
+            font-size: 26px;
+            border-bottom: 2px solid #1B365D;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #4A777A;
+            font-size: 20px;
+            margin-top: 25px;
+        }
+        h3 {
+            color: #1B365D;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        p, li {
+            font-size: 14.5px;
+            color: #333333;
+        }
+        .subtitle {
+            font-style: italic;
+            color: #555555;
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 13.5px;
+        }
+        th {
+            background-color: #1B365D;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f4f6f8;
+        }
+        .code-block {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            border-left: 4px solid #4A777A;
+            margin: 15px 0;
+            white-space: pre-wrap;
+        }
+        .badge {
+            background-color: #4EC9B0;
+            color: #1e1e1e;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MLOps Experiential Learning Assignment Report</h1>
+        <div class="subtitle">End-to-End Machine Learning Engineering: UCI Heart Disease Dataset, MLflow Tracking, FastAPI Serving, Docker Containerization, GitHub Actions CI/CD & Kubernetes Orchestration</div>
+
+        <h2>Project Metadata Summary</h2>
+        <table>
+            <tr>
+                <th>Attribute</th>
+                <th>Specification / Details</th>
+            </tr>
+            <tr>
+                <td>Dataset Source</td>
+                <td>UCI Heart Disease Cleveland Dataset (303 records, 14 attributes)</td>
+            </tr>
+            <tr>
+                <td>Evaluated Models</td>
+                <td>Logistic Regression vs. Random Forest Classifier</td>
+            </tr>
+            <tr>
+                <td>Selected Model</td>
+                <td>Random Forest Classifier (Accuracy: 86.89%, F1-Score: 0.8621, ROC-AUC: 0.9470)</td>
+            </tr>
+            <tr>
+                <td>Experiment Tracking</td>
+                <td>MLflow (SQLite Backend: sqlite:///mlflow.db)</td>
+            </tr>
+            <tr>
+                <td>Model Artifact Packaging</td>
+                <td>Scikit-Learn Pipeline serialized via Cloudpickle (joblib)</td>
+            </tr>
+            <tr>
+                <td>REST API Framework</td>
+                <td>FastAPI + Uvicorn with Pydantic V2 schemas & Prometheus instrumentation</td>
+            </tr>
+            <tr>
+                <td>CI/CD Automation</td>
+                <td>GitHub Actions (.github/workflows/ci_cd.yml)</td>
+            </tr>
+            <tr>
+                <td>Containerization</td>
+                <td>Docker (python:3.10-slim base image)</td>
+            </tr>
+            <tr>
+                <td>Orchestration</td>
+                <td>Kubernetes Deployment (2 Replicas & LoadBalancer Service)</td>
+            </tr>
+            <tr>
+                <td>Observability</td>
+                <td>Prometheus Telemetry (/metrics endpoint) & System Logging</td>
+            </tr>
+        </table>
+
+        <h2>1. Executive Summary & Architecture</h2>
+        <p>This report details an end-to-end MLOps pipeline for predicting heart disease risk based on clinical patient attributes. Moving beyond offline model development, this architecture implements a production-grade lifecycle embracing automated data preprocessing, experiment lineage tracking, static code linting, automated testing, container isolation, cloud-native orchestration, and real-time observability.</p>
+
+        <h2>2. Preprocessing & Model Evaluation</h2>
+        <p>Data processing is fully automated inside a Scikit-Learn <code>ColumnTransformer</code> within <code>src/preprocess.py</code>, ensuring zero data leakage during cross-validation and online serving:</p>
+        <ul>
+            <li><strong>Numerical Features:</strong> Median value imputation followed by standard scaling (Z-score normalization).</li>
+            <li><strong>Categorical Features:</strong> Most-frequent value imputation followed by One-Hot Encoding with <code>handle_unknown='ignore'</code>.</li>
+        </ul>
+
+        <h3>Model Performance Metrics</h3>
+        <table>
+            <tr>
+                <th>Model Architecture</th>
+                <th>Accuracy</th>
+                <th>Precision</th>
+                <th>Recall</th>
+                <th>F1-Score</th>
+                <th>ROC-AUC</th>
+            </tr>
+            <tr>
+                <td>Logistic Regression (C=1.0)</td>
+                <td>85.25%</td>
+                <td>0.8214</td>
+                <td>0.8519</td>
+                <td>0.8364</td>
+                <td>0.9120</td>
+            </tr>
+            <tr>
+                <td>Random Forest Classifier (Trees=100)</td>
+                <td>86.89%</td>
+                <td>0.8333</td>
+                <td>0.8929</td>
+                <td>0.8621</td>
+                <td>0.9470</td>
+            </tr>
+        </table>
+        <p><strong>Selection Decision:</strong> The Random Forest Classifier was selected as the final production model due to superior recall (0.8929) and ROC-AUC (0.9470), which are critical in diagnostic risk scoring to minimize false negative diagnoses.</p>
+
+        <h2>3. Continuous Integration & Quality Assurance</h2>
+        <p>GitHub Actions manages the automated CI/CD pipeline (<code>.github/workflows/ci_cd.yml</code>). Upon code push to <code>main</code>, the pipeline executes:</p>
+        <ol>
+            <li><strong>Static Code Linting:</strong> Flake8 verifies Python code style and checks for syntax errors.</li>
+            <li><strong>Automated Model Training:</strong> Runs <code>python -m src.train</code> to verify model reproducibility and log metrics to MLflow.</li>
+            <li><strong>Unit Testing Suite:</strong> Executes <code>pytest tests/ -v</code> verifying data ingestion, preprocessing output shapes, health check, and prediction endpoints.</li>
+            <li><strong>Container Image Verification:</strong> Builds the Docker image (<code>heart-disease-api:latest</code>) to validate container readiness.</li>
+        </ol>
+
+        <h2>4. Containerization & Kubernetes Orchestration</h2>
+        <p>The FastAPI application is containerized using <code>python:3.10-slim</code> and orchestrated on Kubernetes with the following specifications:</p>
+        <ul>
+            <li><strong>High Availability:</strong> 2 pod replicas managed via <code>k8s/deployment.yaml</code>.</li>
+            <li><strong>Health Probes:</strong> Liveness and Readiness HTTP probes querying <code>/health</code> every 10–15 seconds.</li>
+            <li><strong>Resource Allocations:</strong> CPU Requests: 250m / Limit: 500m; Memory Requests: 256Mi / Limit: 512Mi.</li>
+            <li><strong>External Exposure:</strong> Exposed via <code>LoadBalancer</code> service type (<code>k8s/service.yaml</code>) mapping external port 80 to container port 8000.</li>
+        </ul>
+
+        <h2>5. Live Endpoint Verification</h2>
+        <div class="code-block">$ curl -X POST "http://localhost:80/predict"      -H "Content-Type: application/json"      -d '{
+       "age": 55, "sex": 1, "cp": 3, "trestbps": 130, "chol": 250,
+       "fbs": 0, "restecg": 1, "thalach": 140, "exang": 0,
+       "oldpeak": 1.2, "slope": 2, "ca": 0, "thal": 3
+     }'
+
+{"prediction":0,"probability":0.19761012528139382,"risk_level":"Low"}</div>
+
+        <h2>6. Prometheus Telemetry & Observability</h2>
+        <p>Prometheus instrumentation (<code>prometheus_fastapi_instrumentator</code>) exposes runtime telemetry at <code>/metrics</code>, including request counts (<code>http_requests_total</code>) and latency distributions (<code>http_request_duration_seconds</code>).</p>
+    </div>
+</body>
+</html>
