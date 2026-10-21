@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+mlruns/
+models/*.pkl
+data/raw/*.csv
+.DS_Store
