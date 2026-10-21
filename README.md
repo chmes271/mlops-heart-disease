@@ -13,7 +13,7 @@ An enterprise-grade, cloud-native MLOps pipeline built on the **UCI Heart Diseas
 
 ## 📽️ Video Walkthrough & Project Demo
 
-* **Video Demonstration Link:** [Watch Project Walkthrough Video](https://youtube.com) *(Insert your Loom/YouTube link here)*
+
 * **Report Document:** Available under `MLOps_Heart_Disease_Assignment_Report.docx` and `mlops_submission_report.html`.
 
 ---
